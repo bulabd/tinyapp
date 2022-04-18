@@ -1,9 +1,17 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
+
+function generateRandomString() {
+  let numbersLetters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let finalStr = '';
+  for (let i = 0; i < 6; i++) {
+    finalStr += numbersLetters[Math.floor(Math.random() * 35)];
+  }
+  return finalStr;
+};
 
 app.set('view engine', 'ejs');
 
@@ -19,6 +27,11 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
+});
+
+app.post('/urls', (req, res) => {
+  console.log(req.body);
+  res.send('Ok');
 });
 
 app.get('/urls.json', (req, res) => {
