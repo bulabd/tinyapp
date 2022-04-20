@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
+const req = require("express/lib/request");
 app.use(cookieParser());
 
 function generateRandomString() {
@@ -13,6 +14,15 @@ function generateRandomString() {
     finalStr += numbersLetters[Math.floor(Math.random() * 35)];
   }
   return finalStr;
+};
+
+function isEmailAvailable(database, key, email) {
+  for (let user in database) {
+    if (database[user][key] === email) {
+      return false;
+    }
+  }
+  return true;
 };
 
 app.set('view engine', 'ejs');
@@ -51,8 +61,6 @@ app.get("/urls", (req, res) => {
 app.post('/urls', (req, res) => {
   let newShortURL = generateRandomString();
   urlDatabase[newShortURL] = req.body.longURL;
-  // console.log(urlDatabase);
-  // console.log(req.body);
   res.redirect(`/urls/${newShortURL}`);
 });
 
@@ -125,13 +133,21 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   let newUserId = generateRandomString();
-  users[newUserId] = {
-    id: newUserId,
-    email: req.body.email,
-    password: req.body.password
-  };
-  res.cookie('user_id', newUserId);
-  res.redirect('/urls');
+  if (req.body.email === '' || req.body.password === '') {
+    res.status(400);
+    res.send('Your email and/or password is empty.');
+  } else if (!isEmailAvailable(users, "email", req.body.email)) {
+    res.status(400);
+    res.send('An account with this email already exists.');
+  } else {  
+    users[newUserId] = {
+      id: newUserId,
+      email: req.body.email,
+      password: req.body.password
+    };
+    res.cookie('user_id', newUserId);
+    res.redirect('/urls');
+  }
 });
 
 app.listen(PORT, () => {
