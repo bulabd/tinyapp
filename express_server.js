@@ -122,11 +122,28 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  // res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  let foundUser;
+  for (let user in users) {
+    if (users[user].email === req.body.email) {
+      foundUser = users[user];
+      break;
+    }
+  }
+  if (foundUser) {
+    if (foundUser.password === req.body.password) {
+      res.cookie('user_id', foundUser.id);
+      res.redirect('/urls');
+    } else {
+      res.status(403);
+      res.send('Wrong password');
+    }
+  } else {
+    res.status(403);
+    res.send('Could not find User');
+  }
 });
 
-app.post('/logout', (req, res) => {
+app.get('/logout', (req, res) => {
   res.clearCookie('user_id');
   res.redirect('/urls');
 });

@@ -14,10 +14,10 @@
           <a class="nav-item nav-link" href="/login">Login</a>
           <a class="nav-item nav-link" href="/register">Register</a>
         <% } else { %>
-          <a class="nav-item nav-link" href="/logout">Logout</a>
+          <label for="loginMessage" class="nav-item pr-3 mt-2">Logged In As: <%= user.email %>!</label>
+          <a class="nav-item btn btn-outline-dark" href="/logout">Logout</a>
         <% } %>
       </div>
     </div>
-    
   </nav>
 </header>
