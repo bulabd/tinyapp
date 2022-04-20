@@ -114,8 +114,15 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(longURL);
 });
 
+app.get('/login', (req, res) => {
+  const templateVars = { 
+    user: users[req.cookies['user_id']]
+  };
+  res.render('urls_login', templateVars);
+});
+
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
+  // res.cookie('username', req.body.username);
   res.redirect('/urls');
 });
 
