@@ -50,6 +50,10 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+app.get('/hello', (req, res) => {
+  res.send('<html><body>Hello <b>World</b></body></html>\n');
+});
+
 app.get("/urls", (req, res) => {
   const templateVars = { 
     urls: urlDatabase,
@@ -59,17 +63,20 @@ app.get("/urls", (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  let newShortURL = generateRandomString();
-  urlDatabase[newShortURL] = req.body.longURL;
-  res.redirect(`/urls/${newShortURL}`);
+  const templateVars = { 
+    user: users[req.cookies['user_id']]
+  };
+  if (templateVars.user === undefined) {
+    res.redirect('/login');
+  } else {
+    let newShortURL = generateRandomString();
+    urlDatabase[newShortURL] = req.body.longURL;
+    res.redirect(`/urls/${newShortURL}`);
+  }
 });
 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
-});
-
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
 });
 
 app.get('/urls/new', (req, res) => {
