@@ -9,17 +9,17 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-      <% if (username === undefined) { %>
-        <form style="display: flex;" method="POST" action="/login">
-          <input class="form-control" type="text" name="username" placeholder="Username">
-          <input class="btn btn-outline-dark" type="submit" value="Login">
-        </form>
-     <% } else { %>
-        <form style="display: flex;" method="POST" action="/logout">
-          <label>Logged in as: <%= username %></label>
-          <input class="btn btn-outline-dark" type="submit" value="Logout">
-        </form>
-     <% } %>
     </div>
+    <% if (username === undefined) { %>
+      <form class="form-inline text-right" method="POST" action="/login">
+        <input class="form-control" type="text" name="username" placeholder="Username">
+        <input class="btn btn-outline-dark" type="submit" value="Login">
+      </form>
+   <% } else { %>
+      <form class="form-inline text-right" method="POST" action="/logout">
+        <label class="nav-item pr-3">Logged In As: <%= username %></label>
+        <input class="btn btn-outline-dark nav-item" type="submit" value="Logout">
+      </form>
+   <% } %>
   </nav>
 </header>
