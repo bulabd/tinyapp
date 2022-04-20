@@ -117,7 +117,21 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  res.render('urls_register');
+  const templateVars = { 
+    username: req.cookies["username"]
+  };
+  res.render('urls_register', templateVars);
+});
+
+app.post('/register', (req, res) => {
+  let newUserId = generateRandomString();
+  users[newUserId] = {
+    id: newUserId,
+    email: req.body.email,
+    password: req.body.password
+  };
+  res.cookie('user_id', newUserId);
+  res.redirect('/urls');
 });
 
 app.listen(PORT, () => {
