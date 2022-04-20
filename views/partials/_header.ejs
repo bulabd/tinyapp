@@ -8,12 +8,18 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <p>Logged in as: <%= username %></p>
-        <form style="display: flex;" method="POST"     action="/login">
+      </div>
+      <% if (username === undefined) { %>
+        <form style="display: flex;" method="POST" action="/login">
           <input class="form-control" type="text" name="username" placeholder="Username">
           <input class="btn btn-outline-dark" type="submit" value="Login">
         </form>
-      </div>
+     <% } else { %>
+        <form style="display: flex;" method="POST" action="/logout">
+          <label>Logged in as: <%= username %></label>
+          <input class="btn btn-outline-dark" type="submit" value="Logout">
+        </form>
+     <% } %>
     </div>
   </nav>
 </header>
