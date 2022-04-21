@@ -1,6 +1,6 @@
-const { assert } = require('chai');
+const { assert, expect } = require('chai');
 
-const { findUserByEmail, generateRandomString, isEmailAvailable } = require('../helpers.js');
+const { findUserByEmail, generateRandomString, userURLs } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
@@ -41,6 +41,30 @@ describe('generateRandomString', function() {
   it('should return a string of length 6', function() {
     const randomStringLength = generateRandomString().length;
     assert.strictEqual(randomStringLength, 6);
+  });
+
+});
+
+const urlDatabase = {
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: 'aJ48lw'
+  },
+  "9sm5xK": {
+    longURL: "http://www.google.com",
+    userID: 'aJ48lw'
+  }
+};
+
+describe('userURLs', function() {
+
+  it('should return an object containing the urls of the specified ID', function() {
+    const URLsObject = userURLs('aJ48lw', urlDatabase);
+    const expectedURLsObj = {
+      'b2xVn2': "http://www.lighthouselabs.ca",
+      '9sm5xK': "http://www.google.com"
+    };
+    expect(URLsObject).to.eql(expectedURLsObj);
   });
 
 });
