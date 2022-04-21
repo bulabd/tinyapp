@@ -4,9 +4,16 @@ const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+
 const req = require("express/lib/request");
 const bcrypt = require('bcryptjs');
-app.use(cookieParser());
+
+// app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['Hello there!']
+}));
 
 function generateRandomString() {
   let numbersLetters = 'abcdefghijklmnopqrstuvwxyz0123456789';
