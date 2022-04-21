@@ -112,11 +112,16 @@ app.get('/urls/:shortURL', (req, res) => {
     longURL: userURLs(req.cookies['user_id'])[req.params.shortURL],
     user: users[req.cookies['user_id']] 
   };
-  if (req.cookies['user_id']) {
-    res.render('urls_show', templateVars);
-  } else {
+  if (!(req.params.shortURL in urlDatabase)) {
     res.status(404);
-    res.send('Please login first');
+    res.send('Error: URL does not exist');
+  } else {
+    if (urlDatabase[req.params.shortURL].userID === req.cookies['user_id']) {
+      res.render('urls_show', templateVars);
+    } else {
+      res.status(403);
+      res.send('Error: Please login first');
+    }
   }
 });
 
@@ -135,11 +140,16 @@ app.get('/urls/:shortURL/edit', (req, res) => {
     longURL: userURLs(req.cookies['user_id'])[req.params.shortURL],
     user: users[req.cookies['user_id']] 
   };
-  if (req.cookies['user_id']) {
+  if (urlDatabase[req.params.shortURL].userID === req.cookies['user_id']) {
     res.render('urls_show', templateVars);
   } else {
-    res.status(404);
-    res.send('Please login first');
+    if (req.cookies['user_id'] === undefined) {
+      res.status(403);
+      res.send('Error: Please login first');
+    } else if (urlDatabase[req.params.shortURL].userID !== req.cookies['user_id']) {
+      res.status(401);
+      res.send('Error: You do not have access to this URL');
+    }
   }
 });
 
@@ -156,7 +166,7 @@ app.get('/u/:shortURL', (req, res) => {
     res.redirect(longURLObj.longURL);
   } else {
     res.status(404);
-    res.send('URL does not exist');
+    res.send('Error: URL does not exist');
   }
 });
 
