@@ -13,20 +13,10 @@ const findUserByEmail = (email, users) => {
       return users[user];
     }
   }
-  return null;
-};
-
-const isEmailAvailable = (database, key, email) => {
-  for (let user in database) {
-    if (database[user][key] === email) {
-      return false;
-    }
-  }
-  return true;
+  return undefined;
 };
 
 module.exports = {
   findUserByEmail,
-  generateRandomString,
-  isEmailAvailable
+  generateRandomString
 };
