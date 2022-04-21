@@ -185,14 +185,18 @@ app.get('/login', (req, res) => {
   res.render('urls_login', templateVars);
 });
 
-app.post('/login', (req, res) => {
-  let foundUser;
+function findUserByEmail(email, users) {
   for (let user in users) {
-    if (users[user].email === req.body.email) {
-      foundUser = users[user];
-      break;
+    if (users[user].email === email) {
+      return users[user];
     }
   }
+  return null;
+};
+
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const foundUser = findUserByEmail(email, users);
   if (foundUser) {
     if (bcrypt.compareSync(req.body.password, foundUser.password)) {
       req.session.user_id = foundUser.id;
