@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
 const req = require("express/lib/request");
+const bcrypt = require('bcryptjs');
 app.use(cookieParser());
 
 function generateRandomString() {
@@ -186,7 +187,7 @@ app.post('/login', (req, res) => {
     }
   }
   if (foundUser) {
-    if (foundUser.password === req.body.password) {
+    if (bcrypt.compareSync(req.body.password, foundUser.password)) {
       res.cookie('user_id', foundUser.id);
       res.redirect('/urls');
     } else {
@@ -223,7 +224,7 @@ app.post('/register', (req, res) => {
     users[newUserId] = {
       id: newUserId,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(req.body.password, 10)
     };
     res.cookie('user_id', newUserId);
     res.redirect('/urls');
