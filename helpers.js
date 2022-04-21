@@ -16,7 +16,18 @@ const findUserByEmail = (email, users) => {
   return undefined;
 };
 
+const userURLs = (userID) => {
+  let URLsObject = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === userID) {
+      URLsObject[url] = urlDatabase[url].longURL;
+    }
+  }
+  return URLsObject;
+};
+
 module.exports = {
   findUserByEmail,
-  generateRandomString
+  generateRandomString,
+  userURLs
 };
