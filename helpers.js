@@ -25,7 +25,7 @@ const isEmailAvailable = (database, key, email) => {
   return true;
 };
 
-modules.exports = {
+module.exports = {
   findUserByEmail,
   generateRandomString,
   isEmailAvailable
