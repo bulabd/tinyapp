@@ -1,3 +1,4 @@
+const {generateRandomString, findUserByEmail, isEmailAvailable} = require('./helpers');
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -14,24 +15,6 @@ app.use(cookieSession({
   name: 'session',
   keys: ['Hello there!']
 }));
-
-function generateRandomString() {
-  let numbersLetters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let finalStr = '';
-  for (let i = 0; i < 6; i++) {
-    finalStr += numbersLetters[Math.floor(Math.random() * 35)];
-  }
-  return finalStr;
-};
-
-function isEmailAvailable(database, key, email) {
-  for (let user in database) {
-    if (database[user][key] === email) {
-      return false;
-    }
-  }
-  return true;
-};
 
 // In compass the function is urlsForUser
 function userURLs(userID) {
@@ -184,15 +167,6 @@ app.get('/login', (req, res) => {
   };
   res.render('urls_login', templateVars);
 });
-
-function findUserByEmail(email, users) {
-  for (let user in users) {
-    if (users[user].email === email) {
-      return users[user];
-    }
-  }
-  return null;
-};
 
 app.post('/login', (req, res) => {
   const email = req.body.email;
