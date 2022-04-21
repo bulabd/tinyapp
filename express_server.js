@@ -1,16 +1,12 @@
 const {generateRandomString, findUserByEmail, userURLs} = require('./helpers');
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
-// const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
-
-const req = require("express/lib/request");
 const bcrypt = require('bcryptjs');
 
-// app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['Hello there!']
@@ -42,7 +38,6 @@ const users = {
   }
 };
 
-
 app.get("/", (req, res) => {
   if (req.session.user_id) {
     return res.redirect('/urls');
@@ -52,16 +47,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  if (req.session.user_id) {
-    const templateVars = {
-      urls: userURLs(req.session.user_id),
-      user: users[req.session.user_id]
-    };
-    res.render("urls_index", templateVars);
-  } else {
-    res.status(401);
-    res.send('<h1>Error: Please login first</h1>');
-  }
+  const templateVars = {
+    urls: userURLs(req.session.user_id, urlDatabase),
+    user: users[req.session.user_id]
+  };
+  res.render("urls_index", templateVars);
 });
 
 app.post('/urls', (req, res) => {
@@ -98,7 +88,7 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
-    longURL: userURLs(req.session.user_id)[req.params.shortURL],
+    longURL: userURLs(req.session.user_id, urlDatabase)[req.params.shortURL],
     user: users[req.session.user_id]
   };
   if (!(req.params.shortURL in urlDatabase)) {
@@ -157,7 +147,7 @@ app.get('/u/:shortURL', (req, res) => {
 
 app.get('/login', (req, res) => {
   const userID = req.session.user_id;
-  if (userID !== null) {
+  if (userID != null) {
     return res.redirect('/urls');
   }
   const templateVars = {
@@ -190,7 +180,7 @@ app.post('/logout', (req, res) => {
 
 app.get('/register', (req, res) => {
   const userID = req.session.user_id;
-  if (userID !== null) {
+  if (userID != null) {
     return res.redirect('/urls');
   }
   const templateVars = {
