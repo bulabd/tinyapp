@@ -25,6 +25,7 @@ function isEmailAvailable(database, key, email) {
   return true;
 };
 
+// In compass the function is urlsForUser
 function userURLs(userID) {
   let URLsObject = {};
   for (let url in urlDatabase) {
@@ -111,7 +112,12 @@ app.get('/urls/:shortURL', (req, res) => {
     longURL: userURLs(req.cookies['user_id'])[req.params.shortURL],
     user: users[req.cookies['user_id']] 
   };
-  res.render('urls_show', templateVars);
+  if (req.cookies['user_id']) {
+    res.render('urls_show', templateVars);
+  } else {
+    res.status(404);
+    res.send('Please login first');
+  }
 });
 
 app.post('/urls/:shortURL', (req, res) => {
@@ -129,7 +135,12 @@ app.get('/urls/:shortURL/edit', (req, res) => {
     longURL: userURLs(req.cookies['user_id'])[req.params.shortURL],
     user: users[req.cookies['user_id']] 
   };
-  res.render('urls_show', templateVars);
+  if (req.cookies['user_id']) {
+    res.render('urls_show', templateVars);
+  } else {
+    res.status(404);
+    res.send('Please login first');
+  }
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
