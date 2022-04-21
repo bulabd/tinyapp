@@ -19,7 +19,9 @@
           <a class="nav-item nav-link" href="/register">Register</a>
         <% } else { %>
           <label for="loginMessage" class="nav-item pr-3 mt-2">Logged In As: <%= user.email %>!</label>
-          <a class="nav-item btn btn-outline-dark" href="/logout">Logout</a>
+          <form method="POST" action="/logout">
+            <input type="submit" value="Logout" class="nav-item btn btn-outline-dark">
+          </form>
         <% } %>
       </div>
     </div>
