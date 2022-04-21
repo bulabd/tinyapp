@@ -1,4 +1,4 @@
-const {generateRandomString, findUserByEmail, isEmailAvailable} = require('./helpers');
+const {generateRandomString, findUserByEmail} = require('./helpers');
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -202,7 +202,7 @@ app.post('/register', (req, res) => {
   if (req.body.email === '' || req.body.password === '') {
     res.status(400);
     res.send('Your email and/or password is empty.');
-  } else if (!isEmailAvailable(users, "email", req.body.email)) {
+  } else if (findUserByEmail(req.body.email, users)) {
     res.status(400);
     res.send('An account with this email already exists.');
   } else {  
