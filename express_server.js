@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const templateVars = {
-    urls: userURLs(req.session.user_id, urlDatabase),
+    urls: userURLs(req.session.user_id, urlDatabase), // object of user's URLs
     user: users[req.session.user_id]
   };
   res.render("urls_index", templateVars);
@@ -62,7 +62,7 @@ app.post('/urls', (req, res) => {
     return res.redirect('/login');
   } else {
     let newShortURL = generateRandomString();
-    urlDatabase[newShortURL] = {
+    urlDatabase[newShortURL] = {      // add a new URL for a user
       longURL: req.body.longURL,
       userID: req.session.user_id
     };
@@ -74,7 +74,7 @@ app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get('/urls/new', (req, res) => {
+app.get('/urls/new', (req, res) => {  // create new URL page
   if (req.session.user_id) {
     const templateVars = {
       user: users[req.session.user_id]
@@ -91,14 +91,14 @@ app.get('/urls/:shortURL', (req, res) => {
     longURL: userURLs(req.session.user_id, urlDatabase)[req.params.shortURL],
     user: users[req.session.user_id]
   };
-  if (!(req.params.shortURL in urlDatabase)) {
+  if (!(req.params.shortURL in urlDatabase)) { // if URL not in database
     res.status(404);
     res.send('<h1>Error: URL does not exist</h1>');
   } else {
     if (urlDatabase[req.params.shortURL].userID === req.session.user_id) {
       res.render('urls_show', templateVars);
     } else {
-      if (req.session.user_id && urlDatabase[req.params.shortURL].userID !== req.session.user_id) {
+      if (req.session.user_id && urlDatabase[req.params.shortURL].userID !== req.session.user_id) { // if another user tries to access not his owned URL
         res.status(403);
         res.send('<h1>Error: Cannot access someone else\'s URL</h1>');
       } else {
@@ -112,13 +112,13 @@ app.get('/urls/:shortURL', (req, res) => {
 app.post('/urls/:shortURL', (req, res) => {
   const longURL = req.body.longURL;
   const shortURL = req.params.shortURL;
-  if (urlDatabase[shortURL].userID === req.session.user_id) {
+  if (urlDatabase[shortURL].userID === req.session.user_id) { // if right user, can modify URL
     urlDatabase[shortURL].longURL = longURL;
   }
   res.redirect('/urls');
 });
 
-app.get('/urls/:shortURL/delete', (req, res) => {
+app.get('/urls/:shortURL/delete', (req, res) => { // only the user can delete URL
   if (!req.session.user_id) {
     res.status(401);
     res.send('<h1>Error: Please login first</h1>');
@@ -129,13 +129,13 @@ app.get('/urls/:shortURL/delete', (req, res) => {
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  if (urlDatabase[req.params.shortURL].userID === req.session.user_id) {
+  if (urlDatabase[req.params.shortURL].userID === req.session.user_id) { // only user can delete URL
     delete urlDatabase[req.params.shortURL];
   }
   res.redirect('/urls');
 });
 
-app.get('/u/:shortURL', (req, res) => {
+app.get('/u/:shortURL', (req, res) => { // short URL links to website
   const longURLObj = urlDatabase[req.params.shortURL];
   if (longURLObj) {
     return res.redirect(longURLObj.longURL);
@@ -147,7 +147,7 @@ app.get('/u/:shortURL', (req, res) => {
 
 app.get('/login', (req, res) => {
   const userID = req.session.user_id;
-  if (userID != null) {
+  if (userID != null) {  // logged user cannot login again
     return res.redirect('/urls');
   }
   const templateVars = {
@@ -180,7 +180,7 @@ app.post('/logout', (req, res) => {
 
 app.get('/register', (req, res) => {
   const userID = req.session.user_id;
-  if (userID != null) {
+  if (userID != null) { // registered and logged user cannot register again
     return res.redirect('/urls');
   }
   const templateVars = {
